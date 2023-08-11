@@ -1,25 +1,42 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { tokens } from '../../Theme';
 import { useParams } from 'react-router-dom';
-import {  useSelector } from 'react-redux';
+import { jobposition } from '../../data/dummyData';
 
-const ApplicantDetails = () => {
+const JobDesc = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const {id: applicantID} = useParams();
-
-    const applicants = useSelector((state) => state.applicants.applicants);
 
 
+    const [applicant, setApplicant] = useState(null); 
+    const [loading, setLoading] = useState(true); 
+    const { id } = useParams();
 
-    const applicant = applicants.find((applicant) => applicant.id === (applicantID));
+    useEffect(() => {
 
-    const formatSalary = (salary) => {
-        // Format the salary with commas for thousands separator
-        return salary.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    };
+        const fetchData = async () => { 
+            // if(loading) return
+            try {
+                const data = await jobposition();
+                console.log('Fetched job positions:', data);
+                console.log('Requested id:', id);
+                const matchedApplicant = data.find((applicant) => applicant.id == id);
+                console.log('Matched applicant:', matchedApplicant);
+                if (matchedApplicant) {
+                    setApplicant(matchedApplicant);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false); 
+            }
+        };
+
+        fetchData();
+    }, [id, loading]);
+    console.log(id,loading);
 
     return (
         <Box
@@ -33,7 +50,9 @@ const ApplicantDetails = () => {
                 gap: '20px',
             }}
         >
-            {applicant && (
+            {loading ? (
+                <CircularProgress /> 
+            ) : applicant ? (
                 <Box
                     sx={{
                         color: colors.grey[400],
@@ -43,7 +62,7 @@ const ApplicantDetails = () => {
                     }}
                 >
                     <Typography variant="h2" color={colors.grey[100]}>
-                        Applicant Details
+                        Applicant Position Details
                     </Typography>
                     <Box
                         sx={{
@@ -57,29 +76,20 @@ const ApplicantDetails = () => {
                         }}
                     >
                         <Typography variant="h6" color={colors.greenAccent[400]}>
-                            <p>Name: {applicant.name}</p>
-                            <p>Email: {applicant.email}</p>
-                            <p>Phone: {applicant.phone}</p>
-                            <p>Reference: {applicant.reference}</p>
-                            <p>
-                                Technology: {applicant.technology} - Level: {applicant.level}
-                            </p>
-                            <p>
-                                Salary: ${formatSalary(applicant.salary)} per year
-                            </p>
-                            <p>Experience: {applicant.experience}</p>
+                            <p>Associate Engineer: {applicant.name}</p>
                         </Typography>
                     </Box>
                     <Typography variant="body1" color={colors.grey[100]}>
-
-                        {`This applicant, ${applicant.name}, has a strong background in ${applicant.technology} with ${applicant.experience} of experience.
-                      They are currently at the ${applicant.level} level and expect a yearly salary of $${formatSalary(applicant.salary)}.
-                          For further contact, you can reach them at ${applicant.email} or ${applicant.phone}.`}
+                        {`This applicant has a strong background in ${applicant.name}`}
                     </Typography>
                 </Box>
+            ) : (
+                <Typography variant="body1" color={colors.grey[100]}>
+                    Applicant not found.
+                </Typography>
             )}
         </Box>
     );
 };
 
-export default ApplicantDetails;
+export default JobDesc;

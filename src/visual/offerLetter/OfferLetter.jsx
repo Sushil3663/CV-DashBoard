@@ -3,9 +3,7 @@ import { tokens } from '../../Theme';
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-// import { useState } from "react";
-// import Letter from "./Letter";
-// import { v4 as uuid } from 'uuid';
+
 import Header from "../../components/Header";
 import { useNavigate } from "react-router-dom";
 

@@ -202,11 +202,19 @@ const SideBar = () => {
                      <Typography variant="h6" color={colors.grey[100]}>Job Domain </Typography>
                   </Link>
                   </MenuItem>
+
                   <MenuItem onClick={handleDropdownToggle} style={{ color: colors.grey[100] }}>
                     <Link to="/level">
                     <Typography variant="h6" color={colors.grey[100]}>Job Level</Typography>
                     </Link>
                   </MenuItem>
+
+                  <MenuItem onClick={handleDropdownToggle} style={{ color: colors.grey[100] }}>
+                    <Link to="/position">
+                    <Typography variant="h6" color={colors.grey[100]}>Job Position</Typography>
+                    </Link>
+                  </MenuItem>
+
                   <MenuItem onClick={handleDropdownToggle} style={{ color: colors.grey[100] }}>
                     <Link to="/status">
                     <Typography variant="h6" color={colors.grey[100]}>Job Application Status</Typography>

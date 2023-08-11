@@ -2,38 +2,47 @@ import React from 'react'
 import { Box, useTheme } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../../Theme';
-import { candidateData as initialcandidateData } from '../../data/dummyData';
+// import { candidateData as initialcandidateData } from '../../data/dummyData';
 import Header from '../../components/Header';
 
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useReducer } from 'react';
-import { reducer } from '../../components/Redux';
-// import EditIcon from '@mui/icons-material/Edit';
-// import SaveIcon from '@mui/icons-material/Save'; 
-
+// import { useReducer } from 'react';
+// import { reducer } from '../../components/Redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteSelectedApplicant } from '../../redux/checkedApplicantSlice'; 
 import { useNavigate } from 'react-router-dom'; 
 
-const initialState = {
-  item: initialcandidateData,
+// const initialState = {
+//   item: initialcandidateData,
   
-}
+// }
+
+
 
 const Candidate = () => {
 
   const theme = useTheme()
   const colors = tokens(theme.palette.mode);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const selectedapplicants = useSelector((state) => state.checkedApplicants.selectedRows);
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  // const [state, dispatch] = useReducer(reducer, initialState);
 
 
   const handleDelete = (id) => {
-    return dispatch({
-      type: "REMOVE",
-      payload: id
-    });
+    dispatch(deleteSelectedApplicant(id))
+
+    const localStorageKey = 'selectedRows';
+    const storedData = JSON.parse(localStorage.getItem('selectedRows'));
+    if (storedData) {
+      const filteredData = storedData.filter(item => !id.includes(item.id));
+      localStorage.setItem(localStorageKey, JSON.stringify(filteredData));
+    }
+
+   
   };
 
   const handleRowClick = (params, event) => {
@@ -51,9 +60,7 @@ const Candidate = () => {
 
 
   const columns = [
-    // {
-    //     field: "id", headerName: "ID"
-    // },
+   
     {
       field: "name", headerName: "Name", flex: 1, cellClassName: "name-column-cell",
     },
@@ -67,50 +74,15 @@ const Candidate = () => {
       field: "phone", headerName: "Phone", flex: 1,
     },
     {
-      field: "date", headerName: "Date", flex: 1,
-    },
-    {
       field: "operation",
       headerName: "Operation",
       flex: 1,
       renderCell: (params) => {
         return (
           <Box display="flex" justifyContent="center">
-           {/* {editRowId !== params.id ? (
-              <button
-                onClick={() => handleEdit(params.id)}
-                style={{
-                  background: 'green',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  padding: '8px 16px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <EditIcon style={{ marginRight: '8px' }} />
-              </button>
-            ) : (
-              <button
-                onClick={() => handleSave(params.row)}
-                style={{
-                  background: 'blue',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  padding: '8px 16px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <SaveIcon style={{ marginRight: '8px' }} />
-              </button>
-            )} */}
+          
           <button
-            onClick={() => handleDelete(params.id)}
+            onClick={()=> handleDelete(params.id)}
             style={{
               background: 'red', 
               color: 'white',
@@ -122,7 +94,7 @@ const Candidate = () => {
               alignItems: 'center', 
             }}
             data-operation="delete"
-          >
+          >Remove
             <DeleteIcon />
           </button>
         </Box>
@@ -173,7 +145,7 @@ const Candidate = () => {
       >
         <DataGrid
           checkboxSelection
-          rows={state.item}
+          rows={selectedapplicants}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
           onRowClick={handleRowClick}

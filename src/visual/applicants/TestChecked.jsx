@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
 import { Box, useTheme } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGridCellCheckbox } from '@mui/x-data-grid';
 import { tokens } from '../../Theme';
 import Header from '../../components/Header';
 import { fetchApplicants } from '../../api/Api';
 import { setApplicants } from '../../redux/applicantSlice';
 import { deleteApplicant } from '../../api/Api';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
+// import { setSelectedRows } from '../../redux/checkedApplicantSlice'; 
 import DeleteIcon from '@mui/icons-material/Delete';
-import { setSelectedRows } from '../../redux/checkedApplicantSlice'; 
 
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -25,20 +26,17 @@ const Applicants = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const applicants = useSelector((state) => state.applicants.applicants);
-  const selectedRows = useSelector((state) => state.checkedApplicants.selectedRows);
+  // const selectedRows = useSelector((state) => state.checkedApplicants.selectedRows); 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchApplicants();
         dispatch(setApplicants(data));
-         // Load selected rows from local storage and update Redux store
-         const selectedFromLocalStorage = JSON.parse(localStorage.getItem('selectedRows'));
-         if (selectedFromLocalStorage) {
-           dispatch(setSelectedRows(selectedFromLocalStorage));
-         }
-    
-     
+        // const savedSelectedRows = localStorage.getItem('selectedRows');
+        // if (savedSelectedRows) {
+        //   dispatch(setSelectedRows(JSON.parse(savedSelectedRows)));
+        // }
       }
       catch (error) {
         console.error('Error fetching Applicant:', error);
@@ -46,25 +44,7 @@ const Applicants = () => {
       }
     };
     fetchData();
-  }, [dispatch]);
-
-
-  const onRowsSelectionHandler = (ids) => {
-    const selectedRowsData = ids.map((id) => applicants.find((row) => row.id === id));
-    console.log(selectedRowsData);
-    dispatch(setSelectedRows(selectedRowsData));
-  };
-
-  // const handleRowSelection = (params) => {
-  //   const selectedIds = params.selection.map((row) => row.id);
-  //   console.log(selectedIds)
-  //   dispatch(setSelectedRows(selectedIds));
-  // };
-  useEffect(() => {
-    // Save selected rows to local storage whenever the selection changes
-    localStorage.setItem('selectedRows', JSON.stringify(selectedRows));
-  }, [selectedRows]);
-
+  }, [dispatch])
 
   const handleDelete = async (id) => {
 
@@ -79,7 +59,35 @@ const Applicants = () => {
     }
 
   }
+  // const handleCheckboxChange = (event, id) => {
+  //   // The event parameter represents the checkbox change event, and the id is the unique identifier of the row.
   
+  //   // Get whether the checkbox is checked or not
+  //   const checked = event.target.checked;
+  
+  //   if (checked) {
+  //     // If the checkbox is checked, add the current id to the list of selectedRows
+  //     const newSelectedRows = [...selectedRows, id];
+  
+  //     // Dispatch the action to update the selectedRows state in Redux store
+  //     dispatch(setSelectedRows(newSelectedRows));
+  
+  //     // Store the updated selectedRows list in localStorage to persist the state
+  //     localStorage.setItem('selectedRows', JSON.stringify(newSelectedRows));
+  //   } else {
+  //     // If the checkbox is unchecked, remove the current id from the list of selectedRows
+  //     const newSelectedRows = selectedRows.filter(rowId => rowId !== id);
+  
+  //     // Dispatch the action to update the selectedRows state in Redux store
+  //     dispatch(setSelectedRows(newSelectedRows));
+  
+  //     // Store the updated selectedRows list in localStorage to persist the state
+  //     localStorage.setItem('selectedRows', JSON.stringify(newSelectedRows));
+  //   }
+  // };
+  
+
+
 
   const columns = [
 
@@ -95,7 +103,20 @@ const Applicants = () => {
     {
       field: "reference", headerName: "Reference", flex: 1,
     },
-    
+    // {
+    //     field: "technology", headerName: "Technology",flex:1, renderCell: ({technology})=>{
+    //         return(
+    //             <Box
+    //             width="40%" m={"0 auto"} p="5px" display={"flex"} justifyContent={"center"} backgroundColor={
+    //                 technology === "react" ? colors.blueAccent[400] : colors.blueAccent[500]} borderRadius={"4px"} >
+    //                     { technology === "Dot Net" && <FiberManualRecordIcon />}
+    //                     { technology === "React" && <AcUnitOutlinedIcon />}
+    //                     { technology === "QA" && <BugReportOutlinedIcon />}
+
+    //                 </Box>
+    //         )
+    //     },
+    // },
     {
       field: "technology", headerName: "Technology", flex: 1,
     },
@@ -135,6 +156,7 @@ const Applicants = () => {
             <button
               onClick={(event) => {
                 event.stopPropagation();
+                // Check if the event target is the checkbox
                 if (event.target.tagName !== "INPUT" || event.target.type !== "checkbox") {
                   handleDelete(params.row.id);
                 }
@@ -175,7 +197,6 @@ const Applicants = () => {
     navigate("/form")
 
   }
-
 
 
   return (
@@ -235,10 +256,24 @@ const Applicants = () => {
           checkboxSelection
           rows={applicants}
           columns= {columns}
-          components={{Toolbar: GridToolbar}}
+          // columns={columns.map((column) => ({
+          //   ...column,
+          //   renderCell: (params) => {
+          //     if (column.field === 'operation') {
+          //       return column.renderCell(params);
+          //     }
+          //     return (
+          //       <DataGridCellCheckbox
+          //         {...params}
+          //         onChange={(event) => handleCheckboxChange(event, params.row.id)}
+          //       />
+          //     );
+          //   },
+          // }))}
+          components={{
+            Toolbar: GridToolbar
+          }}
           onRowClick={handleRowClick}
-          disableSelectionOnClick
-          onRowSelectionModelChange ={(ids) => onRowsSelectionHandler(ids)}
           rowsPerPageOptions={[10, 20, 50]}
           pagination
         />

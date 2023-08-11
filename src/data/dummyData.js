@@ -383,3 +383,54 @@ export const lineChartData =
       ]
     }
   ]
+
+
+export const jobposition = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve([
+        {
+          id: 1,
+          name: 'Dotnet',
+          jobDescriptionUrl: 'https://DotNet.com/dotnet-jd',
+          isActive: true,
+          jobDomainId: "job-position-1",
+          jobLevelId: "job-level-1",
+        },
+        {
+          id: 2,
+          name: 'React',
+          jobDescriptionUrl: 'https://ReactJS RE.com/react-js',
+          isActive: true,
+          jobDomainId:  "job-position-2",
+          jobLevelId: "job-level-2",
+        },
+        {
+          id: 3,
+          name: 'NodeJS',
+          jobDescriptionUrl: 'https://NodeJS NE.com/node-js',
+          isActive: true,
+          jobDomainId:  "job-position-3",
+          jobLevelId: "job-level-3",
+        },
+        {
+          id: 4,
+          name: 'Associate Engineer (QA)',
+          jobDescriptionUrl: 'https://QualityAsurrance.com/qa-ts',
+          isActive: false,
+          jobDomainId:  "job-position-4",
+          jobLevelId: "job-level-4", 
+        },
+        {
+          id: 5,
+          name: 'HR',
+          jobDescriptionUrl: 'https://HumanResource.com/hr-wm',
+          isActive: true,
+          jobDomainId:  "job-position-5",
+          jobLevelId: "job-level-5",
+        },
+
+      ]);
+    },1000);
+  });
+};

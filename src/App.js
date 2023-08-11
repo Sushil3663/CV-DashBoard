@@ -18,6 +18,12 @@ import Letter from "./visual/offerLetter/Letter";
 import JobDomain from "./visual/jobs/JobDomain";
 import JobLevel from "./visual/jobs/JobLevel";
 import JobApplicationStatus from "./visual/jobs/JobApplicationStatus";
+import JobPosition from "./visual/jobs/JobPosition";
+import JobDesc from "./visual/jobs/JobDesc";
+import Assesment from "./visual/assesments/Assesment";
+import AssessmentForm from "./visual/assesments/AssessmentForm";
+import UpdateAssessmentForm from "./visual/assesments/UpdateAssessment";
+import UpdateFrom from "./visual/applicants/UpdateForm";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -36,12 +42,19 @@ function App() {
 
               <Route path="/applicants" element={<Applicants />} />
               <Route path="/applicants/:id" element={<ApplicantDetails />} />
+              <Route path="/updateapplicant/:id" element={<UpdateFrom />} />
+
 
               <Route path="/contact" element={<Candidate />} />
               <Route path="/contact/:id" element={<CandidateDetail />} />
 
               <Route path="/form" element={<CreateForm />} />
-              <Route path="/assesment" element={<h1>Assesment</h1>} />
+              
+              <Route path="/assesment" element={<Assesment />} />
+              <Route path="/assesmentform" element={<AssessmentForm />} />
+              <Route path="/updateassessmentForm/:id" element={<UpdateAssessmentForm />} />
+
+
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />
               <Route path="/line" element={<Line />} />
@@ -51,6 +64,10 @@ function App() {
               <Route path="/domain" element = {<JobDomain />} />
               <Route path="/level" element = {<JobLevel />} />
               <Route path="/status" element = {<JobApplicationStatus />} />
+              <Route path="/position" element = {<JobPosition />} />
+              <Route path="/position/:id" element={<JobDesc />} />
+
+
              
             </Routes>
           </main>

@@ -3,15 +3,18 @@ import { Box, Typography } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import { tokens } from '../../Theme';
 import { useParams } from 'react-router-dom';
-import { candidateData } from '../../data/dummyData';
-
+import { useSelector } from 'react-redux';
+import { formatDate } from '../calander/FormateDate';
 const CandidateDetail = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    
 
-    const { id } = useParams();
+    const { id: ids } = useParams();
 
-    const applicant = candidateData.find((applicant) => applicant.id === id);
+    const selectedapplicants = useSelector((state) => state.checkedApplicants.selectedRows)
+
+    const applicant = selectedapplicants.find((applicant) => applicant.id === ids);
 
     const formatSalary = (salary) => {
         // Format the salary with commas for thousands separator
@@ -73,12 +76,10 @@ const CandidateDetail = () => {
                           For further contact, you can reach them at ${applicant.email} or ${applicant.phone}.
                           `}
 
-                        {`The applicant can have his/her final intervie round at ${applicant.date}. He/She is requisted to arrive at Amnil technology at 9:45 AM .`}
-
                     </Typography>
                     <Typography variant="body1" color={colors.grey[100]}>
 
-                        {`The applicant can have his/her final interview round at ${applicant.date}. He/She is requisted to arrive at Amnil technology at 9:45 AM .`}
+                        {`The applicant can have his/her final interview round at {formatDate()}. He/She is requisted to arrive at Amnil technology at 9:45 AM .`}
 
                     </Typography>
                 </Box>
